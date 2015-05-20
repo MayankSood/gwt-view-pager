@@ -79,9 +79,4 @@ public class TestView extends Composite implements MadpiggyViewPagerAdapter  {
 		return tabs;
 	}
 
-	@Override
-	public void onTabSelection(Tab tab) {
-		carousel.setSelectedPage(tab.getIndex());
-	}
-
 }

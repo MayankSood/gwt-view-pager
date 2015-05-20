@@ -6,6 +6,4 @@ public interface MadpiggyViewPagerAdapter extends CarouselPageAdapter {
 
 	public Tab[] getTabs();
 
-	public void onTabSelection(Tab tab);
-
 }

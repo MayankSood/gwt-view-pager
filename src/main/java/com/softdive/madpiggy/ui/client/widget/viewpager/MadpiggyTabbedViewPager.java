@@ -53,7 +53,7 @@ public class MadpiggyTabbedViewPager extends Composite implements CarouselPageAd
 
 								@Override
 								public void run() {
-									adapter.onTabSelection(tab);
+									carousel.setSelectedPage(tab.getIndex());
 								}
 							}.schedule(320);
 						};
