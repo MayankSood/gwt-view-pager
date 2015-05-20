@@ -55,7 +55,7 @@ public class MadpiggyTabbedViewPager extends Composite implements CarouselPageAd
 								public void run() {
 									carousel.setSelectedPage(tab.getIndex());
 								}
-							}.schedule(320);
+							}.schedule(1);
 						};
 					}));
 
@@ -103,7 +103,7 @@ public class MadpiggyTabbedViewPager extends Composite implements CarouselPageAd
 	}
 
 	public void setSelectedPage(int index) {
-		carousel.setSelectedPage(index, true);
+		carousel.setSelectedPage(index, false);
 	}
 
 }

@@ -1,16 +1,3 @@
-/*
- * Copyright 2012 Daniel Kurka
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
- */
 package com.softdive.madpiggy.ui.client.widget.carousel;
 
 import java.util.ArrayList;
@@ -21,10 +8,8 @@ import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.TouchMoveEvent;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
@@ -46,17 +31,11 @@ import com.googlecode.mgwt.ui.client.widget.panel.flex.FlexPanel;
 import com.googlecode.mgwt.ui.client.widget.panel.flex.FlexPropertyHelper.Justification;
 import com.googlecode.mgwt.ui.client.widget.panel.flex.FlexPropertyHelper.Orientation;
 import com.googlecode.mgwt.ui.client.widget.panel.scroll.ScrollEndEvent;
-import com.googlecode.mgwt.ui.client.widget.panel.scroll.ScrollMoveEvent;
 import com.googlecode.mgwt.ui.client.widget.panel.scroll.ScrollPanel;
 import com.googlecode.mgwt.ui.client.widget.panel.scroll.ScrollRefreshEvent;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchWidget;
 import com.softdive.madpiggy.ui.client.widget.carousel.CarouselAppearance.CarouselCss;
 
-/**
- * A carousel renders its children in a row. A user can select a different child
- * by swiping between them.
- *
- */
 public class Carousel extends Composite implements HasSelectionHandlers<Integer>, SelectionHandler<Integer> {
 
 	private CarouselPageAdapter carouselPageAdapter;
@@ -133,19 +112,16 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 		}
 	}
 
-	@UiField
-	public FlexPanel main;
-	@UiField
-	public ScrollPanel scrollPanel;
-	@UiField
-	public FlowPanel container;
+	@UiField public FlexPanel main;
+	@UiField public ScrollPanel scrollPanel;
+	@UiField public FlowPanel container;
+	@UiField public ScrollPanel verticalScrollPanel;
 	private CarouselIndicatorContainer carouselIndicatorContainer;
 	private boolean isVisibleCarouselIndicator = true;
 
 	private int currentPage;
 
 	private Map<Integer, FlowPanel> indexToWidget;
-	private Map<Integer, ScrollPanel> indexToScrollPanel = new HashMap<Integer, ScrollPanel>();
 	private HandlerRegistration refreshHandler;
 
 	private static final CarouselImpl IMPL = GWT.create(CarouselImpl.class);
@@ -171,6 +147,14 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 		scrollPanel.setShowHorizontalScrollBar(false);
 		scrollPanel.setScrollingEnabledY(true);
 		scrollPanel.setAutoHandleResize(false);
+		
+		
+		verticalScrollPanel.setShowVerticalScrollBar(false);
+		verticalScrollPanel.setShowHorizontalScrollBar(false);
+		verticalScrollPanel.setScrollingEnabledY(true);
+		verticalScrollPanel.setScrollingEnabledX(false);
+		verticalScrollPanel.setAutoHandleResize(true);
+		verticalScrollPanel.setBounce(false);
 
 		currentPage = 0;
 
@@ -185,16 +169,6 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 
 			}
 		});
-
-		/*scrollPanel.addScrollMoveHandler(new ScrollMoveEvent.Handler() {
-
-			@Override
-			public void onScrollMove(ScrollMoveEvent event) {
-				TouchMoveEvent moveEvent = event.getEvent();
-				moveEvent.stopPropagation();
-				moveEvent.preventDefault();
-			}
-		});*/
 
 		MGWT.addOrientationChangeHandler(new OrientationChangeHandler() {
 
@@ -401,20 +375,13 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 		
 		for (int position = 0; position < carouselPageAdapter.getItemCount(); position++) {
 			
-			ScrollPanel panel = new ScrollPanel();
-			panel.setScrollingEnabledX(false);
-			panel.setScrollingEnabledY(true);
-			panel.setShowHorizontalScrollBar(false);
-			panel.setShowVerticalScrollBar(false);
 			FlowPanel widgetHolder = new FlowPanel();
 			widgetHolder.getElement().getStyle().setPosition(Position.FIXED);
 			widgetHolder.addStyleName(this.appearance.cssCarousel().carouselHolder());
 			
 			indexToWidget.put(position, widgetHolder);
-			indexToScrollPanel.put(position, panel);
 
-			panel.add(widgetHolder);
-			container.add(panel);
+			container.add(widgetHolder);
 
 			IMPL.adjust(main, container);
 		}
@@ -429,6 +396,13 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 	public void onSelection(SelectionEvent<Integer> event) {
 		passEventToContainer(event);
 		handleOffscreenViews(event.getSelectedItem());
+		new Timer() {
+			
+			@Override
+			public void run() {
+				verticalScrollPanel.refresh();
+			}
+		}.schedule(100);
 	}
 	
 	public void setOffscreenViews(int offscreenViews) {
@@ -442,9 +416,10 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 				entrySet.getValue().getElement().removeAllChildren();
 			} else {
 				if (entrySet.getValue().getElement().getChildCount() == 0) {
-					entrySet.getValue().add(carouselPageAdapter.getWidget(entryIndex));
-					indexToScrollPanel.get(selectedItem).setWidth("100%");
-					indexToScrollPanel.get(selectedItem).refresh();
+					Widget d = carouselPageAdapter.getWidget(entryIndex);
+					entrySet.getValue().add(d);
+					entrySet.getValue().setHeight(d.getOffsetHeight()+"px");
+					container.setHeight(d.getOffsetHeight()+"px");
 				}
 			}
 		}

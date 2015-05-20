@@ -1,9 +1,6 @@
 package com.softdive.madpiggy.ui.client;
 
-import java.util.logging.Logger;
-
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
@@ -23,7 +20,7 @@ public class TestView extends Composite implements MadpiggyViewPagerAdapter  {
 	@UiField FlowPanel container;
 	private MadpiggyTabbedViewPager carousel;
 	
-	public static final int COUNT = 2;
+	public static final int COUNT = 20;
 	
 	private static final Tab[] tabs = new Tab[COUNT];
 	static {
@@ -32,8 +29,6 @@ public class TestView extends Composite implements MadpiggyViewPagerAdapter  {
 		}
 	}
 	
-	private final static Logger logger = Logger.getLogger("TestView");
-
 	private static TestViewUiBinder uiBinder = GWT.create(TestViewUiBinder.class);
 
 	interface TestViewUiBinder extends UiBinder<Widget, TestView> {

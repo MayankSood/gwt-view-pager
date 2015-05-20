@@ -4,8 +4,10 @@
 	xmlns:m="urn:import:com.googlecode.mgwt.ui.client.widget">
 	<ui:with field="appearance" type="com.softdive.madpiggy.ui.client.widget.carousel.CarouselAppearance"></ui:with>
 	<m:panel.flex.FlexPanel ui:field="main" styleName="{appearance.cssCarousel.carousel}">
-	  <m:panel.scroll.ScrollPanel ui:field="scrollPanel">
-	    <g:FlowPanel ui:field="container" styleName="{appearance.cssCarousel.carouselContainer}" />
-	  </m:panel.scroll.ScrollPanel>
+		<m:panel.scroll.ScrollPanel ui:field="verticalScrollPanel">
+		  <m:panel.scroll.ScrollPanel ui:field="scrollPanel">
+		    <g:FlowPanel ui:field="container" styleName="{appearance.cssCarousel.carouselContainer}" />
+		  </m:panel.scroll.ScrollPanel>
+		</m:panel.scroll.ScrollPanel>
 	</m:panel.flex.FlexPanel>
 </ui:UiBinder> 
