@@ -23,9 +23,9 @@ public class TestView extends Composite implements MadpiggyViewPagerAdapter  {
 	@UiField FlowPanel container;
 	private MadpiggyTabbedViewPager carousel;
 	
-	public static final int COUNT = 20;
+	public static final int COUNT = 2;
 	
-	private static final Tab[] tabs = new Tab[10];
+	private static final Tab[] tabs = new Tab[COUNT];
 	static {
 		for (int i = 0; i<COUNT; i++) {
 			tabs[i] = new Tab("Name-"+i, TabType.DEALS, i);

@@ -22,6 +22,7 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Overflow;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.TouchMoveEvent;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -144,6 +145,7 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 	private int currentPage;
 
 	private Map<Integer, FlowPanel> indexToWidget;
+	private Map<Integer, ScrollPanel> indexToScrollPanel = new HashMap<Integer, ScrollPanel>();
 	private HandlerRegistration refreshHandler;
 
 	private static final CarouselImpl IMPL = GWT.create(CarouselImpl.class);
@@ -184,7 +186,7 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 			}
 		});
 
-		scrollPanel.addScrollMoveHandler(new ScrollMoveEvent.Handler() {
+		/*scrollPanel.addScrollMoveHandler(new ScrollMoveEvent.Handler() {
 
 			@Override
 			public void onScrollMove(ScrollMoveEvent event) {
@@ -192,7 +194,7 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 				moveEvent.stopPropagation();
 				moveEvent.preventDefault();
 			}
-		});
+		});*/
 
 		MGWT.addOrientationChangeHandler(new OrientationChangeHandler() {
 
@@ -397,13 +399,22 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 	public void setAdapter(CarouselPageAdapter adapter) {
 		this.carouselPageAdapter = adapter;
 		
-		for (int count = 0; count < carouselPageAdapter.getItemCount(); count++) {
+		for (int position = 0; position < carouselPageAdapter.getItemCount(); position++) {
+			
+			ScrollPanel panel = new ScrollPanel();
+			panel.setScrollingEnabledX(false);
+			panel.setScrollingEnabledY(true);
+			panel.setShowHorizontalScrollBar(false);
+			panel.setShowVerticalScrollBar(false);
 			FlowPanel widgetHolder = new FlowPanel();
+			widgetHolder.getElement().getStyle().setPosition(Position.FIXED);
 			widgetHolder.addStyleName(this.appearance.cssCarousel().carouselHolder());
 			
-			indexToWidget.put(count, widgetHolder);
+			indexToWidget.put(position, widgetHolder);
+			indexToScrollPanel.put(position, panel);
 
-			container.add(widgetHolder);
+			panel.add(widgetHolder);
+			container.add(panel);
 
 			IMPL.adjust(main, container);
 		}
@@ -417,7 +428,6 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 	@Override
 	public void onSelection(SelectionEvent<Integer> event) {
 		passEventToContainer(event);
-		
 		handleOffscreenViews(event.getSelectedItem());
 	}
 	
@@ -433,14 +443,9 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 			} else {
 				if (entrySet.getValue().getElement().getChildCount() == 0) {
 					entrySet.getValue().add(carouselPageAdapter.getWidget(entryIndex));
+					indexToScrollPanel.get(selectedItem).setWidth("100%");
+					indexToScrollPanel.get(selectedItem).refresh();
 				}
-			}
-		}
-		
-		//TODO remove in future, just for testing
-		for (Map.Entry<Integer, FlowPanel> w : indexToWidget.entrySet()) {
-			if (w.getValue().getElement().getChildCount() != 0) {
-				//Window.alert(w.getKey()+"---"+w.getValue().toString());
 			}
 		}
 	}

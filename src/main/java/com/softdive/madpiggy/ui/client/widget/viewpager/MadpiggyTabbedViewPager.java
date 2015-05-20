@@ -68,14 +68,6 @@ public class MadpiggyTabbedViewPager extends Composite implements CarouselPageAd
 		paperTabs.hideScrollButton(true);
 
 		FlowPanel tabsContainer = new FlowPanel();
-		/*
-		 * tabsContainer.getElement().getStyle().setPosition(Position.ABSOLUTE);
-		 * tabsContainer.getElement().getStyle().setTop(0, Unit.PX);
-		 * tabsContainer.getElement().getStyle().setMargin(0, Unit.PX);
-		 * tabsContainer.getElement().getStyle().setRight(0, Unit.PX);
-		 * tabsContainer.getElement().getStyle().setLeft(0, Unit.PX);
-		 * tabsContainer.getElement().getStyle().setWidth(100, Unit.PCT);
-		 */
 		parentContainer.add(tabsContainer);
 
 		Browser.append(tabsContainer.getElement(), paperTabs.getElement());
