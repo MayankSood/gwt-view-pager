@@ -31,8 +31,7 @@ import com.googlecode.mgwt.ui.client.widget.panel.flex.FlexPanel;
 import com.googlecode.mgwt.ui.client.widget.panel.flex.FlexPropertyHelper.Justification;
 import com.googlecode.mgwt.ui.client.widget.panel.flex.FlexPropertyHelper.Orientation;
 import com.googlecode.mgwt.ui.client.widget.panel.scroll.ScrollEndEvent;
-import com.googlecode.mgwt.ui.client.widget.panel.scroll.ScrollMoveEvent;
-import com.googlecode.mgwt.ui.client.widget.panel.scroll.ScrollMoveEvent.Handler;
+import com.googlecode.mgwt.ui.client.widget.panel.scroll.ScrollEndEvent.Handler;
 import com.googlecode.mgwt.ui.client.widget.panel.scroll.ScrollPanel;
 import com.googlecode.mgwt.ui.client.widget.panel.scroll.ScrollRefreshEvent;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchWidget;
@@ -124,6 +123,7 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 	private int currentPage;
 
 	private Map<Integer, FlowPanel> indexToWidget;
+	private Map<Integer, Integer> indexToScrollPosition;
 	private HandlerRegistration refreshHandler;
 
 	private static final CarouselImpl IMPL = GWT.create(CarouselImpl.class);
@@ -131,6 +131,7 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 	private static final CarouselAppearance DEFAULT_APPEARANCE = GWT.create(CarouselAppearance.class);
 	private final CarouselAppearance appearance;
 	private boolean hasScollData;
+	private boolean isFitstTime = true;
 
 	public Carousel() {
 		this(DEFAULT_APPEARANCE);
@@ -141,6 +142,7 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 		this.appearance = appearance;
 		initWidget(this.appearance.carouselBinder().createAndBindUi(this));
 		indexToWidget = new HashMap<Integer, FlowPanel>();
+		indexToScrollPosition = new HashMap<Integer, Integer>();
 
 		scrollPanel.setSnap(true);
 		scrollPanel.setSnapThreshold(50);
@@ -160,14 +162,25 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 
 		currentPage = 0;
 
+		verticalScrollPanel.addScrollEndHandler(new Handler() {
+			
+			@Override
+			public void onScrollEnd(ScrollEndEvent event) {
+				indexToScrollPosition.put(currentPage, verticalScrollPanel.getY());
+			}
+		});
+		
 		scrollPanel.addScrollEndHandler(new ScrollEndEvent.Handler() {
 
 			@Override
 			public void onScrollEnd(ScrollEndEvent event) {
 				int page = scrollPanel.getCurrentPageX();
-
-				carouselIndicatorContainer.setSelectedIndex(page);
-				SelectionEvent.fire(Carousel.this, page);
+				
+				if (page != currentPage || isFitstTime) {
+					carouselIndicatorContainer.setSelectedIndex(page);
+					SelectionEvent.fire(Carousel.this, page);
+					isFitstTime = false;
+				}
 
 			}
 		});
@@ -291,6 +304,7 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 
 	public void setSelectedPage(int index) {
 		setSelectedPage(index, true);
+		SelectionEvent.fire(Carousel.this, index);
 	}
 
 	public void setSelectedPage(int index, boolean issueEvent) {
@@ -387,6 +401,8 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 
 			IMPL.adjust(main, container);
 		}
+		
+		setSelectedPage(0);
 	}
 
 	@UiFactory
@@ -395,7 +411,7 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 	}
 
 	@Override
-	public void onSelection(SelectionEvent<Integer> event) {
+	public void onSelection(final SelectionEvent<Integer> event) {
 		passEventToContainer(event);
 		handleOffscreenViews(event.getSelectedItem());
 		new Timer() {
@@ -403,8 +419,13 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 			@Override
 			public void run() {
 				verticalScrollPanel.refresh();
+				if (indexToScrollPosition.get(currentPage) != null) {
+					verticalScrollPanel.scrollTo(0, indexToScrollPosition.get(currentPage));
+				} else {
+					verticalScrollPanel.scrollTo(0, 0, 0, false);
+				}
 			}
-		}.schedule(100);
+		}.schedule(0);
 	}
 	
 	public void setOffscreenViews(int offscreenViews) {
