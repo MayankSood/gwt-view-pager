@@ -13,12 +13,6 @@
 
 	<inherits name="com.softdive.gwt.viewpager.ui.client.widget.carousel.Carousel" />
 	
-	<entry-point class='com.softdive.gwt.viewpager.ui.client.MadpiggyEntryPoint' />
-
-	<inherits name="com.google.gwt.logging.Logging" />
-	<set-property name="gwt.logging.enabled" value="TRUE" />
-	<set-property name="gwt.logging.logLevel" value="ALL" />
-
 	<source path='client' />
 </module>
 
