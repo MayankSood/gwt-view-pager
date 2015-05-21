@@ -38,6 +38,8 @@ public class TestView extends Composite implements MadpiggyViewPagerAdapter  {
 		initWidget(uiBinder.createAndBindUi(this));
 		
 		initCarousel();
+		
+		new Object().equals(null);
 	}
 
 	private void initCarousel() {
