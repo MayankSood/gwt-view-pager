@@ -31,6 +31,8 @@ import com.googlecode.mgwt.ui.client.widget.panel.flex.FlexPanel;
 import com.googlecode.mgwt.ui.client.widget.panel.flex.FlexPropertyHelper.Justification;
 import com.googlecode.mgwt.ui.client.widget.panel.flex.FlexPropertyHelper.Orientation;
 import com.googlecode.mgwt.ui.client.widget.panel.scroll.ScrollEndEvent;
+import com.googlecode.mgwt.ui.client.widget.panel.scroll.ScrollMoveEvent;
+import com.googlecode.mgwt.ui.client.widget.panel.scroll.ScrollMoveEvent.Handler;
 import com.googlecode.mgwt.ui.client.widget.panel.scroll.ScrollPanel;
 import com.googlecode.mgwt.ui.client.widget.panel.scroll.ScrollRefreshEvent;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchWidget;
@@ -419,7 +421,11 @@ public class Carousel extends Composite implements HasSelectionHandlers<Integer>
 					Widget d = carouselPageAdapter.getWidget(entryIndex);
 					entrySet.getValue().add(d);
 					entrySet.getValue().setHeight(d.getOffsetHeight()+"px");
+				}
+				if (entrySet.getKey() == selectedItem) {
+					Widget d = entrySet.getValue().getWidget(0);
 					container.setHeight(d.getOffsetHeight()+"px");
+					entrySet.getValue().setHeight(d.getOffsetHeight()+"px");
 				}
 			}
 		}
