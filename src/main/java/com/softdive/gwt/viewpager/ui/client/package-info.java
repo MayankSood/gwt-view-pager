@@ -1,0 +1,1 @@
+package com.softdive.gwt.viewpager.ui.client;

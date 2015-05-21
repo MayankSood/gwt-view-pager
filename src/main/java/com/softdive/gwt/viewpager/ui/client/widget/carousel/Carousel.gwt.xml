@@ -1,0 +1,14 @@
+<module>
+  <replace-with class="com.softdive.gwt.viewpager.ui.client.widget.carousel.CarouselDefaultAppearance">
+    <when-type-is class="com.softdive.gwt.viewpager.ui.client.widget.carousel.CarouselAppearance" />
+  </replace-with>
+  
+  <replace-with class="com.softdive.gwt.viewpager.ui.client.widget.carousel.Carousel.CarouselImplSafari">
+    <when-type-is class="com.softdive.gwt.viewpager.ui.client.widget.carousel.Carousel.CarouselImpl" />
+  </replace-with>
+  
+  <replace-with class="com.softdive.gwt.viewpager.ui.client.widget.carousel.Carousel.CarouselImplGecko">
+    <when-type-is class="com.softdive.gwt.viewpager.ui.client.widget.carousel.Carousel.CarouselImpl" />
+    <when-property-is name="user.agent" value="gecko1_8" />
+  </replace-with>
+</module>
