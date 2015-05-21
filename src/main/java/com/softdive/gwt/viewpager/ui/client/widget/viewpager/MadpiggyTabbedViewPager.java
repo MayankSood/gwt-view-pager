@@ -76,7 +76,7 @@ public class MadpiggyTabbedViewPager extends Composite implements CarouselPageAd
 	private void initCarousel() {
 		carousel = new Carousel();
 		carousel.setWidth("100%");
-		carousel.setHeight(Window.getClientHeight() + "px");
+		carousel.setHeight((Window.getClientHeight()-64) + "px");
 		carousel.setShowCarouselIndicator(false);
 		carousel.setAdapter(this);
 		parentContainer.add(carousel);

@@ -3,22 +3,6 @@
   "http://google-web-toolkit.googlecode.com/svn/tags/2.7.0/distro-source/core/src/gwt-module.dtd">
 <module rename-to='ViewPager'>
 
-	<define-property name="madpiggy.env" values="yes, no" />
-	<property-provider name="madpiggy.env"><![CDATA[
-	  	{
-		    var ua = window.navigator.userAgent.toLowerCase();
-		    if (ua.indexOf('android') != -1 || ua.indexOf('ipad') != -1 || ua.indexOf('ipod') != -1  || ua.indexOf('iphone') != -1 || ua.indexOf('blackberry') != -1) 
-		    { 
-		    	var url = document.location.href;
-		    	if(url.indexOf("file://") === 0 || url.indexOf("local://") === 0)
-		    	{
-		    		return "yes";
-		    	}
-		    }
-		   
-		    return 'no';
-	  	}
-	]]></property-provider>
 	<inherits name='com.google.gwt.user.User' />
 
 	<inherits name="com.googlecode.mgwt.MGWT" />
